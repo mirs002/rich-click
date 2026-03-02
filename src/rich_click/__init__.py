@@ -91,6 +91,7 @@ from rich_click.rich_panel import RichPanel as RichPanel
 from rich_click.rich_parameter import RichArgument as RichArgument
 from rich_click.rich_parameter import RichOption as RichOption
 from rich_click.rich_parameter import RichParameter as RichParameter
+from rich_click.testing import RichCliRunner as RichCliRunner
 
 from . import rich_click as rich_click
 
