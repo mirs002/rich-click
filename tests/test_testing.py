@@ -17,7 +17,7 @@ def cli() -> None:
 
 def test_rich_cli_runner_captures_prompt_when_global_console_is_customized() -> None:
     # Simulate application startup code that configured a global Rich console.
-    rich._console = Console(file=io.StringIO())  # type: ignore[attr-defined]
+    rich._console = Console(file=io.StringIO())
 
     runner = RichCliRunner()
     result = runner.invoke(cli, input="Jane\n")
@@ -28,7 +28,7 @@ def test_rich_cli_runner_captures_prompt_when_global_console_is_customized() -> 
 
 
 def test_click_cli_runner_does_not_capture_prompt_when_global_console_is_customized() -> None:
-    rich._console = Console(file=io.StringIO())  # type: ignore[attr-defined]
+    rich._console = Console(file=io.StringIO())
 
     runner = CliRunner()
     result = runner.invoke(cli, input="Jane\n")

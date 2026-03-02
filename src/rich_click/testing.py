@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import Iterator, Mapping, Optional, TextIO, Tuple, Union
+from typing import IO, Any, Iterator, Mapping
 
 from click.testing import CliRunner
 
 
 class RichCliRunner(CliRunner):
-    """CliRunner that rebinds Rich's global console during isolation.
+    """
+    CliRunner that rebinds Rich's global console during isolation.
 
     Rich caches a process-global console instance. If that console is created
     before Click's ``CliRunner`` swaps ``sys.stdin`` / ``sys.stdout`` / ``sys.stderr``,
@@ -18,22 +19,22 @@ class RichCliRunner(CliRunner):
     """
 
     @contextmanager
-    def isolation(  # type: ignore[override]
+    def isolation(
         self,
-        input: Union[str, bytes, TextIO, None] = None,
-        env: Optional[Mapping[str, Optional[str]]] = None,
+        input: str | bytes | IO[Any] | None = None,
+        env: Mapping[str, str | None] | None = None,
         color: bool = False,
-    ) -> Iterator[Tuple[object, object, object]]:
+    ) -> Iterator[Any]:
         import sys
 
         import rich
         from rich.console import Console
 
-        old_console = rich._console  # type: ignore[attr-defined]
+        old_console = getattr(rich, "_console", None)
 
         with super().isolation(input=input, env=env, color=color) as streams:
-            rich._console = Console(file=sys.stdout, force_terminal=color)  # type: ignore[attr-defined]
+            setattr(rich, "_console", Console(file=sys.stdout, force_terminal=color))
             try:
                 yield streams
             finally:
-                rich._console = old_console  # type: ignore[attr-defined]
+                setattr(rich, "_console", old_console)
